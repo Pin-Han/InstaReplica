@@ -4,6 +4,7 @@ const app = express();
 const PORT = 3000;
 
 const { MONGOURI } = require("./keys");
+app.use(express.json());
 
 const authRouter = require("./routes/auth");
 require("./models/user");
@@ -11,7 +12,6 @@ require("./models/user");
 app.use(authRouter);
 
 // Nob8WNmDZTeUwQRi
-
 mongoose.connect(MONGOURI);
 mongoose.connection.on("connected", () => {
   console.log("connected to mongo");
