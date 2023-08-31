@@ -1,29 +1,26 @@
+const path = require("path");
+
 const express = require("express");
-const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+
+const userRouter = require("./routes/userRoutes");
+
 const app = express();
-const PORT = 3000;
 
-const { MONGOURI } = require("./keys");
-app.use(express.json());
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
-const authRouter = require("./routes/auth");
-require("./models/user");
+app.use(cookieParser());
 
-app.use(authRouter);
+// add limiter
 
-// Nob8WNmDZTeUwQRi
-mongoose.connect(MONGOURI);
-mongoose.connection.on("connected", () => {
-  console.log("connected to mongo");
+// against xss
+
+app.use("/api/user", userRouter);
+app.all("*", (req, res, _next) => {
+  res
+    .status(404)
+    .json({ message: `Can't find ${req.originalUrl} on this server!` });
 });
 
-mongoose.connection.on("error", (error) => {
-  console.error("error connecting", error);
-});
-app.get("/", (req, res) => {
-  res.send("Hello world");
-});
-
-app.listen(PORT, () => {
-  console.log(`server is running on ${PORT}`);
-});
+module.exports = app;
