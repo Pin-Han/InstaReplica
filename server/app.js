@@ -15,7 +15,9 @@ app.use(cookieParser());
 // add limiter
 
 // against xss
-
+app.get("/test", (req, res) => {
+  res.send("Hello from Space! 🚀");
+});
 app.use("/api/user", userRouter);
 app.all("*", (req, res, _next) => {
   res
