@@ -38,6 +38,7 @@ const userSchema: Schema = new Schema({
   passwordConfirm: {
     type: String,
     required: [true, "Please confirm your password"],
+    select: false,
     validate: {
       // This only works on CREATE and SAVE!!
       validator: function (this: InterfaceUser, el: string): boolean {

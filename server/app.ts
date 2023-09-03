@@ -3,17 +3,18 @@ const express = require("express");
 import { Request, Response, NextFunction } from "express";
 
 const cookieParser = require("cookie-parser");
-import { RegisterRoutes } from "./public/routes";
 
 const userRouter = require("./routes/userRoutes");
 
+const AppError = require("./utils/appError");
+const globalErrorHandler = require("./controller/errorController");
 const app = express();
 
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
 app.use(cookieParser());
-RegisterRoutes(app);
+
 // add limiter
 
 // against xss
@@ -24,10 +25,10 @@ app.get("/test", (_req: Request, res: Response) => {
   res.send("Hello from Space! 🚀");
 });
 app.use("/api/user", userRouter);
-app.all("*", (req: Request, res: Response, _next: NextFunction) => {
-  res
-    .status(404)
-    .json({ message: `Can't find ${req.originalUrl} on this server!` });
+app.all("*", (req: Request, _res: Response, next: NextFunction) => {
+  next(new AppError(404, `Can't find ${req.originalUrl} on this server!`));
 });
+
+app.use(globalErrorHandler);
 
 module.exports = app;

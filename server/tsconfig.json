@@ -25,5 +25,5 @@
     "experimentalDecorators": true, // swagger purpose
     "emitDecoratorMetadata": true // swagger purpose
   },
-  "exclude": ["node_modules", "api/tests", "lib", "public/routes/routes.ts"]
+  "exclude": ["node_modules", "api/tests", "lib"]
 }

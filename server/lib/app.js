@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/userRoutes");
+const AppError = require("./utils/appError");
+const globalErrorHandler = require("./controller/errorController");
 const app = express();
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
@@ -17,10 +19,9 @@ app.get("/test", (_req, res) => {
     res.send("Hello from Space! 🚀");
 });
 app.use("/api/user", userRouter);
-app.all("*", (req, res, _next) => {
-    res
-        .status(404)
-        .json({ message: `Can't find ${req.originalUrl} on this server!` });
+app.all("*", (req, _res, next) => {
+    next(new AppError(404, `Can't find ${req.originalUrl} on this server!`));
 });
+app.use(globalErrorHandler);
 module.exports = app;
 //# sourceMappingURL=app.js.map

@@ -1,18 +1,16 @@
 class AppError extends Error {
-  public statusCode: number;
-  public status: string;
-  public isOperational: boolean;
-
+  statusCode: number;
+  status: string;
+  isOperational: boolean;
   constructor(statusCode: number, message: string) {
-    super(message); // 呼叫父類的 constructor
-
+    super(message);
     this.statusCode = statusCode;
-    this.status = `${statusCode}`.startsWith("4") ? "fail" : "error";
+    this.status = `${statusCode}`.startsWith("4") ? "Fail" : "Error";
+    // TODO: error handle in the future
     this.isOperational = true;
 
-    // 獲取堆疊追踪
     Error.captureStackTrace(this, this.constructor);
   }
 }
 
-export default AppError;
+module.exports = AppError;

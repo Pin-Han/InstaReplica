@@ -4,4 +4,3 @@ declare class AppError extends Error {
     isOperational: boolean;
     constructor(statusCode: number, message: string);
 }
-export default AppError;
