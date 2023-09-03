@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "lib": ["es2022"],
+    "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */,
+    "rootDir": "./",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "strict": true /* Enable all strict type-checking options. */,
+    /* Advanced Options */
+    "skipLibCheck": true /* Skip type checking of declaration files. */,
+    "target": "es2022",
+    "outDir": "./lib",
+    "forceConsistentCasingInFileNames": true, //確保檔案的大小寫一致
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "declaration": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "pretty": true,
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true, // swagger purpose
+    "emitDecoratorMetadata": true // swagger purpose
+  },
+  "exclude": ["node_modules", "api/tests", "lib", "public/routes/routes.ts"]
+}
