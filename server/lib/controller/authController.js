@@ -1,9 +1,9 @@
 "use strict";
-const crypto = require("crypto");
-const { promisify } = require("util");
+Object.defineProperty(exports, "__esModule", { value: true });
 const jwt = require("jsonwebtoken");
 const catchAsync = require("../utils/catchAsync");
 const User = require("./../models/userModel");
+const AppError = require("../utils/appError");
 const signToken = (id) => {
     return jwt.sign({ id: id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN,
@@ -37,5 +37,17 @@ exports.signup = catchAsync(async (req, res) => {
         passwordConfirm: req.body.passwordConfirm,
     });
     createSendToken(newUser, 201, res);
+});
+exports.login = catchAsync(async (req, res, next) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return next(new AppError(400, "Please provide email and password!"));
+    }
+    // To compare password, should output this field
+    const user = await User.findOne({ email }).select("+password");
+    if (!user || !user.correctPassword(password, user.password)) {
+        return next(new AppError(401, "Incorrect email or password"));
+    }
+    createSendToken(user, 200, res);
 });
 //# sourceMappingURL=authController.js.map

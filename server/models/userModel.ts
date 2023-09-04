@@ -1,4 +1,6 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
+const validator = require("validator");
+const bcrypt = require("bcryptjs");
 
 // 定義 User 的資料結構
 interface InterfaceUser extends Document {
@@ -27,6 +29,7 @@ const userSchema: Schema = new Schema({
     required: [true, "Please provide your email"],
     unique: true,
     lowercase: true,
+    validate: [validator.isEmail, "Please provide a valid email"],
   },
   photo: { type: String, default: "default.jpg" },
   password: {
@@ -56,6 +59,26 @@ const userSchema: Schema = new Schema({
     select: false,
   },
 });
+
+// Between getting the data and saving it to the DB
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  this.password = await bcrypt.hash(this.password, 12);
+
+  // After mongo validator the password and passwordConfirm are same
+  this.passwordConfirm = undefined;
+
+  next();
+});
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword: string,
+  userPassword: string
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 const User: IUserModel = mongoose.model<InterfaceUser>("User", userSchema);
 module.exports = User;

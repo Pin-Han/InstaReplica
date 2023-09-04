@@ -19,8 +19,6 @@ const DB = process.env.DATABASE!.replace(
 mongoose
   .connect(DB, {
     autoIndex: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
   })
   .then(() => console.log("DB connection successful!"))
   .catch((error: Error) => {
@@ -39,3 +37,4 @@ process.on("unhandledRejection", (err: Error) => {
     process.exit(1);
   });
 });
+

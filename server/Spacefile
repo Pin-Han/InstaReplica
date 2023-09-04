@@ -2,13 +2,12 @@
 
 v: 0
 micros:
-
-- name: nodejs-app
-  src: .
-  engine: nodejs16
-  primary: true
-  run: node index.js
-  dev: npm run serve
-  public: true
-  commands:
-  - npm run build
+  - name: nodejs-app
+    src: .
+    engine: nodejs16
+    primary: true
+    run: node ./lib/index.js
+    dev: npm run serve
+    public: true
+    commands:
+      - npm run build
