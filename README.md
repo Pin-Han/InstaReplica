@@ -8,7 +8,7 @@
 
 ## 🛠 Main Technologies Used
 
-- **Programming Language**: ![TypeScript](https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square)
+- **🔨Programming Language**: ![TypeScript](https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square)
 - **🎯 Backend Framework**: ![Express.js](https://img.shields.io/badge/-Express.js-grey?logo=express)
 - **💾 Database**: ![MongoDB](https://img.shields.io/badge/-MongoDB-grey?logo=mongodb)
 

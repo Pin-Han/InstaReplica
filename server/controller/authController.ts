@@ -1,3 +1,4 @@
+const { promisify } = require("util");
 import { NextFunction, Request, Response } from "express";
 
 const jwt = require("jsonwebtoken");
@@ -71,5 +72,44 @@ exports.login = catchAsync(
     }
 
     createSendToken(user, 200, res);
+  }
+);
+
+exports.protect = catchAsync(
+  async (req: any, _res: Response, next: NextFunction) => {
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+    if (!token) {
+      return next(new AppError(401, "Please log in to access"));
+    }
+
+    const decoded = await promisify(jwt.verify(token, process.env.JWT_SECRET));
+    console.log(decoded);
+
+    const freshUser = await User.findById(decoded.id);
+    if (!freshUser) {
+      return next(
+        new AppError(
+          "The user belonging to this token does no longer exist.",
+          401
+        )
+      );
+    }
+
+    if (freshUser.changedPasswordAfter(decoded.iat)) {
+      return next(
+        new AppError(
+          401,
+          "User recently changed password! Please login in again"
+        )
+      );
+    }
+    req.user = freshUser;
+    next();
   }
 );
