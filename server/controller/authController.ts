@@ -7,6 +7,7 @@ const catchAsync = require("../utils/catchAsync");
 
 const User = require("./../models/userModel");
 const AppError = require("../utils/appError");
+const sendEmail = require("../utils/email");
 
 interface InterfaceSignup {
   body: {
@@ -110,6 +111,53 @@ exports.protect = catchAsync(
       );
     }
     req.user = freshUser;
+    next();
+  }
+);
+
+exports.forgotPassword = catchAsync(
+  async (req: any, res: Response, next: NextFunction) => {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return next(new AppError(404, "There is no user with email address."));
+    }
+
+    const resetToken: string = user.createPasswordResetToken();
+    await user.save({ validateBeforeSave: false }); // to save the passwordResetExpires in the createPasswordResetToken function
+
+    const resetURL = `${req.protocol}//${req.get(
+      "host"
+    )}/api/user/resetPassword/${resetToken}`;
+    const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}. \n If you didn't forget your password, please ignore this email!`;
+
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Your password reset token (valid for 10 min)",
+        message,
+      });
+
+      res.status(200).json({
+        status: "success",
+        message: "Token sent to email!",
+      });
+    } catch (error) {
+      user.passwordResetToken = undefined;
+      user.passwordResetExpires = undefined;
+      await user.save({ validateBeforeSave: false });
+      console.log(error);
+      return next(
+        new AppError(
+          500,
+          "There was an error sending the email. Try again later!"
+        )
+      );
+    }
+  }
+);
+
+exports.resetPassword = catchAsync(
+  (_req: any, _res: any, next: NextFunction) => {
     next();
   }
 );
