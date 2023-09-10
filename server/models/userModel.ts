@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Model } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 const crypto = require("crypto");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
@@ -16,10 +16,6 @@ interface InterfaceUser extends Document {
   active?: boolean;
 }
 // 定義 User 的靜態方法與實例方法
-
-interface IUserModel extends Model<InterfaceUser> {
-  // 靜態方法
-}
 
 const userSchema: Schema = new Schema({
   name: {
@@ -106,5 +102,5 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken;
 };
 
-const User: IUserModel = mongoose.model<InterfaceUser>("User", userSchema);
+const User = mongoose.model<InterfaceUser>("User", userSchema);
 module.exports = User;

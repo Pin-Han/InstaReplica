@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 
 const userRouter = require("./routes/userRoutes");
+const postRouter = require("./routes/postRoutes");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controller/errorController");
@@ -27,6 +28,8 @@ app.get("/test", (_req: Request, res: Response) => {
   res.send("Hello from Space! 🚀");
 });
 app.use("/api/user", userRouter);
+app.use("/api/post", postRouter);
+
 app.all("*", (req: Request, _res: Response, next: NextFunction) => {
   next(new AppError(404, `Can't find ${req.originalUrl} on this server!`));
 });
